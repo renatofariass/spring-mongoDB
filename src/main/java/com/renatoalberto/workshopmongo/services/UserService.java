@@ -1,13 +1,13 @@
 package com.renatoalberto.workshopmongo.services;
 
 import com.renatoalberto.workshopmongo.domain.User;
+import com.renatoalberto.workshopmongo.dto.UserDTO;
 import com.renatoalberto.workshopmongo.repository.UserRepository;
 import com.renatoalberto.workshopmongo.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -24,5 +24,13 @@ public class UserService {
             throw new ObjectNotFoundException("Objeto não encontrado");
         }
         return user;
+    }
+
+    public User insert(User user) {
+        return userRepository.insert(user);
+    }
+
+    public User fromDTO(UserDTO userDTO) {
+        return new User(userDTO.getId(), userDTO.getName(), userDTO.getEmail());
     }
 }
