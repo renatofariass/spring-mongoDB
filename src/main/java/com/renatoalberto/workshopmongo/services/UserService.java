@@ -1,5 +1,6 @@
 package com.renatoalberto.workshopmongo.services;
 
+import com.mongodb.client.model.ReturnDocument;
 import com.renatoalberto.workshopmongo.domain.User;
 import com.renatoalberto.workshopmongo.dto.UserDTO;
 import com.renatoalberto.workshopmongo.repository.UserRepository;
@@ -37,5 +38,16 @@ public class UserService {
     public void delete(String id) {
         findById(id);
         userRepository.deleteById(id);
+    }
+
+    public User update(User obj) {
+        User newObj = userRepository.findById(obj.getId()).orElse(null);
+        updateData(newObj, obj);
+        return userRepository.save(newObj);
+    }
+
+    public void updateData(User newObj, User obj) {
+        newObj.setName(obj.getName());
+        newObj.setEmail(obj.getEmail());
     }
 }
