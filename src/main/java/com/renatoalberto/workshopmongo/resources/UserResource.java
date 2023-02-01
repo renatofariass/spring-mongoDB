@@ -1,5 +1,6 @@
 package com.renatoalberto.workshopmongo.resources;
 
+import com.renatoalberto.workshopmongo.domain.Post;
 import com.renatoalberto.workshopmongo.domain.User;
 import com.renatoalberto.workshopmongo.dto.UserDTO;
 import com.renatoalberto.workshopmongo.services.UserService;
@@ -10,7 +11,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -19,6 +19,7 @@ public class UserResource {
     @Autowired
     UserService userService;
 
+    // return all users
     @GetMapping
     public ResponseEntity<List<UserDTO>> findAll() {
         List<User> list = userService.findAll();
@@ -26,12 +27,14 @@ public class UserResource {
         return ResponseEntity.ok().body(listDTO);
     }
 
+    // find user by id
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable String id) {
         User user = userService.findById(id);
         return ResponseEntity.ok().body(new UserDTO(user));
     }
 
+    // insert user
     @PostMapping
     public ResponseEntity<Void> insert(@RequestBody UserDTO obj) {
         User user = userService.fromDTO(obj);
@@ -41,17 +44,26 @@ public class UserResource {
         return ResponseEntity.created(uri).build();
     }
 
+    // delete user
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+    // update user
     @PutMapping(value = "/{id}")
     public ResponseEntity<Void> update(@RequestBody UserDTO obj, @PathVariable String id) {
         User user = userService.fromDTO(obj);
         user.setId(id);
         user = userService.update(user);
         return ResponseEntity.noContent().build();
+    }
+
+    //return user by id and your posts
+    @GetMapping(value = "/{id}/posts")
+    public ResponseEntity<List<Post>> findPosts(@PathVariable String id) {
+        User user = userService.findById(id);
+        return ResponseEntity.ok().body(user.getPosts());
     }
 }
